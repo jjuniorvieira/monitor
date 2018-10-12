@@ -1,0 +1,94 @@
+= Recomendacoes
+
+== Recomendacoes
+
+* O JDK deve ser atualizado (1.8.0_172) p/ que seja possivel fazer heapdumps
+  Problema: a versao que estava instalada tem um bug que impossibilita isso
+     https://stackoverflow.com/questions/26882094/jmap-crashes-with-can-not-get-class-data-for0
+
+* O diretorio de instalacao do jdk deve ser um link (chamado jdk) apontando para a versao corrente.
+  No caso atual, /Thales/APIS/thirdparty/jdk/jdk deveria ser um link apontando para /Thales/APIS/thirdparty/jdk/jdk1.8.0_172
+
+* Um arquivo (ou particao) de swap deve estar habilitado p/ que seja possivel fazer heapdumps.
+  Problemas devido a falta de memoria fisica (ou de swap):
+   1) Execucao do jmap p/ retirar um heapdump e quebrada.
+   2) Nao e possivel executar o jvisualvm localmente (em conjunto com o Wildfly e os outros servicos).
+
+== Problemas
+
+=== Geracao do heapdump quebra
+
+A geracao do heapdump esta sendo quebrada (mesmo apos a introducao da memoria swap).
+
+Problema que ocorre (na 160):
+
+----
+/Thales/APIS/thirdparty/jdk/jdk-8u20-linux/bin/jmap -F -dump:file=Standole2.hprof 21732
+Attaching to process ID 21732, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 25.172-b11
+Dumping heap to Standole2.hprof ...
+Exception in thread "main" java.lang.reflect.InvocationTargetException
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:498)
+        at sun.tools.jmap.JMap.runTool(JMap.java:201)
+        at sun.tools.jmap.JMap.main(JMap.java:130)
+Caused by: sun.jvm.hotspot.types.WrongTypeException: No suitable match for type of address 0x0000000003700308
+        at sun.jvm.hotspot.runtime.InstanceConstructor.newWrongTypeException(InstanceConstructor.java:62)
+        at sun.jvm.hotspot.runtime.VirtualBaseConstructor.instantiateWrapperFor(VirtualBaseConstructor.java:109)
+        at sun.jvm.hotspot.oops.Metadata.instantiateWrapperFor(Metadata.java:68)
+        at sun.jvm.hotspot.oops.Oop.getKlassForOopHandle(Oop.java:211)
+        at sun.jvm.hotspot.oops.ObjectHeap.newOop(ObjectHeap.java:251)
+        at sun.jvm.hotspot.oops.ObjectHeap.iterateLiveRegions(ObjectHeap.java:330)
+        at sun.jvm.hotspot.oops.ObjectHeap.iterate(ObjectHeap.java:171)
+        at sun.jvm.hotspot.utilities.AbstractHeapGraphWriter.write(AbstractHeapGraphWriter.java:51)
+        at sun.jvm.hotspot.utilities.HeapHprofBinWriter.write(HeapHprofBinWriter.java:433)
+        at sun.jvm.hotspot.tools.HeapDumper.run(HeapDumper.java:62)
+        at sun.jvm.hotspot.tools.Tool.startInternal(Tool.java:260)
+        at sun.jvm.hotspot.tools.Tool.start(Tool.java:223)
+        at sun.jvm.hotspot.tools.Tool.execute(Tool.java:118)
+        at sun.jvm.hotspot.tools.HeapDumper.main(HeapDumper.java:83)
+        ... 6 more
+----
+
+Links pesquisados:
+
+* https://bugzilla.redhat.com/show_bug.cgi?id=1571375
+* https://bugs.openjdk.java.net/browse/JDK-8029395
+* https://stackoverflow.com/questions/49516601/jstack-in-mixed-mode-wrongtypeexception-no-suitable-match-for-type-of-address
+
+*Solucao do erro*: remocao do parametro '-F' ao executar o comando 'jmap'.
+
+=== Apos geracao e comparacao dos heapdumps, verificou-se um aumento das instancias de chars relativas ao infinispan
+
+Atuacao: Luis C e Thiago ajustaram parametros de configuracao no `standalone-ha.xml`.
+
+Links pesquisados:
+
+* http://www.mastertheboss.com/jboss-frameworks/infinispan/using-infinispan-with-wildfly-8
+
+== Swap configuration
+
+----
+# Read from /dev/zero to provide null characters to build storage file swapfile1. 
+# Read/write 1024 bytes blocks count times
+dd if=/dev/zero of=/swapfile bs=1024 count=$((524288*4))
+# Permissions for security reasons
+chown root:root /swapfile
+mkswap /swapfile
+swapon /swapfile
+# Set on boot
+echo '/swapfile none swap 0 0' >> /etc/fstab
+----
+
+== Crontab configuration
+
+* https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/
+
+== Outros links
+
+* http://www.mastertheboss.com/jboss-server/wildfly-8/monitoring-wildfly-using-visualvm
+* https://developer.toradex.com/knowledge-base/enable-and-analyze-coredumps-in-linux
