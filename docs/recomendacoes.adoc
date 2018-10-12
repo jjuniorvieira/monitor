@@ -7,7 +7,7 @@
      https://stackoverflow.com/questions/26882094/jmap-crashes-with-can-not-get-class-data-for0
 
 * O diretorio de instalacao do jdk deve ser um link (chamado jdk) apontando para a versao corrente.
-  No caso atual, /Thales/APIS/thirdparty/jdk/jdk deveria ser um link apontando para /Thales/APIS/thirdparty/jdk/jdk1.8.0_172
+  No caso atual, /JuniorsCIA/myproject/thirdparty/jdk/jdk deveria ser um link apontando para /JuniorsCIA/myproject/thirdparty/jdk/jdk1.8.0_172
 
 * Um arquivo (ou particao) de swap deve estar habilitado p/ que seja possivel fazer heapdumps.
   Problemas devido a falta de memoria fisica (ou de swap):
@@ -23,7 +23,7 @@ A geracao do heapdump esta sendo quebrada (mesmo apos a introducao da memoria sw
 Problema que ocorre (na 160):
 
 ----
-/Thales/APIS/thirdparty/jdk/jdk-8u20-linux/bin/jmap -F -dump:file=Standole2.hprof 21732
+/JuniorsCIA/myproject/thirdparty/jdk/jdk-8u20-linux/bin/jmap -F -dump:file=Standole2.hprof 21732
 Attaching to process ID 21732, please wait...
 Debugger attached successfully.
 Server compiler detected.

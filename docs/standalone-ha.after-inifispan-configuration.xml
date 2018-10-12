@@ -134,7 +134,7 @@
             <logger category="org.apache.cxf.phase">
                 <level name="ERROR"/>
             </logger>
-            <logger category="com.thales.apis.monitoring">
+            <logger category="com.myproject.myproject.monitoring">
                 <level name="INFO"/>
             </logger>
             <logger category="org.mongodb.morphia.mapping.Mapper">
@@ -146,7 +146,7 @@
             </logger>
             <logger category="org.jboss.as.ejb3.invocation">
                 <level name="WARN"/>
-                <filter-spec value="not(match(&quot;JBAS014134: EJB Invocation failed on component I18NDAOLocalBean for method public abstract com.thales.apis.internationalization.dao.I18NTopoData &quot;))"/>
+                <filter-spec value="not(match(&quot;JBAS014134: EJB Invocation failed on component I18NDAOLocalBean for method public abstract com.myproject.myproject.internationalization.dao.I18NTopoData &quot;))"/>
             </logger>
             <root-logger>
                 <level name="INFO"/>

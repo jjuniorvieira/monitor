@@ -10,7 +10,7 @@ $DEBUG && set -x || set +x
 BASE_DIR=`cd "$(dirname "$0")"; pwd`
 BASE_NAME=`basename "$BASE_DIR"`
 GEN_DIR=generated
-JAVA_HOME=${JAVA_HOME:-/Thales/APIS/thirdparty/jdk/jdk-8u20-linux}
+JAVA_HOME=${JAVA_HOME:-/JuniorsCIA/APIS/thirdparty/jdk/jdk-8u20-linux}
 [ "$ip_addr" ] || {
   echo "ip_addr variable is not configured and will be !"
   exit 1
